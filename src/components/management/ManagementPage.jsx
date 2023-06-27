@@ -1,18 +1,29 @@
 
 import 'bootstrap/dist/css/bootstrap.css'; // Bootstrap stil dosyasını ekleyin
 import './management.css'; // Özel stil dosyasınızı ekleyin (örneğin, styles.css)
-import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  openPopup,
+  closePopup,
+  setFormFields,
+  setFormErrors,
+  setFormData,
+  resetForm
+} from '../../actions/actions';
 import FormList from './FormList';
+import './FormPopup.jsx';
+import '../../store.js';
 
 const ManagementPage = () => {
-  const [showPopup, setShowPopup] = useState(false);
+  const showPopup = useSelector((state) => state.showPopup);
+  const dispatch = useDispatch();
 
   const handleOpenPopup = () => {
-    setShowPopup(true);
+    dispatch(openPopup());
   };
 
   const handleClosePopup = () => {
-    setShowPopup(false);
+    dispatch(closePopup());
   };
 
   return (
@@ -24,10 +35,11 @@ const ManagementPage = () => {
   );
 };
 
+
 const FormPopup = ({ onClosePopup }) => {
-  const [formFields, setFormFields] = useState([]);
-  const [formErrors, setFormErrors] = useState({});
-  const [formData, setFormData] = useState({
+  const [formFields, setFormFields] = useSelector([]);
+  const [formErrors, setFormErrors] = useSelector({});
+  const [formData, setFormData] = useSelector({
     name: '',
     description: '',
     fields: []
