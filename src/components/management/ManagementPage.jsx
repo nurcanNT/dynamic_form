@@ -8,11 +8,11 @@ import {
   setFormData,
   resetForm,
   fetchForms // Yeni eklenen aksiyon
-} from '../../actions/actions';
+} from '../../actions/formActions';
 import FormList from './FormList';
-import './management.css';
-import axios from 'axios'; 
 import FormPopup from './FormPopup';
+import './management.css';
+import axios from 'axios';
 
 const ManagementPage = () => {
   const showPopup = useSelector((state) => state.showPopup);
@@ -40,7 +40,6 @@ const ManagementPage = () => {
   const filteredForms = forms.filter((form) =>
     form.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
-  
 
   return (
     <div>

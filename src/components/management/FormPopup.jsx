@@ -1,165 +1,106 @@
 import React, { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
-  openPopup,
-  closePopup,
   setFormFields,
   setFormErrors,
   setFormData,
-  resetForm,
-  addForm // Yeni eklenen aksiyon
-} from '../../actions/actions';
+  resetForm
+} from '../../actions/formActions';
 
 const FormPopup = ({ onClosePopup }) => {
-  const [formData, setFormData] = useState({
+  const dispatch = useDispatch();
+  const [formFields, setFormFields] = useState({
     name: '',
     description: '',
     createdAt: '',
-    fields: []
+    fields: [
+      { required: true, name: 'Ad', dataType: 'STRING' },
+      { required: true, name: 'Soyad', dataType: 'STRING' },
+      { required: false, name: 'Yaş', dataType: 'NUMBER' }
+    ]
   });
   const [formErrors, setFormErrors] = useState({});
-  const dispatch = useDispatch();
-
-  const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  const handleFieldChange = (index, e) => {
-    const fields = [...formData.fields];
-    fields[index] = { ...fields[index], [e.target.name]: e.target.value };
-    setFormData({ ...formData, fields });
-  };
-
-  const handleAddField = () => {
-    setFormData({
-      ...formData,
-      fields: [
-        ...formData.fields,
-        { required: false, name: '', dataType: '' }
-      ]
-    });
-  };
   
-
-  const handleRemoveField = (index) => {
-    const fields = [...formData.fields];
-    fields.splice(index, 1);
-    setFormData({ ...formData, fields });
+  const handleFieldChange = (e, index) => {
+    const { name, value } = e.target;
+    const updatedFields = [...formFields.fields];
+    updatedFields[index][name] = value;
+    setFormFields({ ...formFields, fields: updatedFields });
   };
 
   const handleSaveForm = () => {
+    // Veri giriş kontrolü yapılması gerekiyor
     const errors = {};
-    let hasError = false;
+    let hasErrors = false;
 
-    if (formData.name.trim() === '') {
-      errors.name = 'Form name is required.';
-      hasError = true;
-    }
-
-    const updatedFields = formData.fields.map((field, index) => {
-      if (field.name.trim() === '') {
-        errors[`field-${index}-name`] = 'Field name is required.';
-        hasError = true;
+    // Zorunlu alanların kontrolü
+    formFields.fields.forEach((field, index) => {
+      if (field.required && !field.name.trim()) {
+        errors[index] = 'Bu alan zorunludur.';
+        hasErrors = true;
       }
-      if (field.dataType.trim() === '') {
-        errors[`field-${index}-dataType`] = 'Data type is required.';
-        hasError = true;
-      }
-      return field;
     });
 
-    if (hasError) {
+    // Hatalar varsa setFormErrors ile hata mesajlarını state'e kaydedin
+    if (hasErrors) {
       setFormErrors(errors);
       return;
     }
 
-    const newForm = { ...formData, createdAt: new Date().toISOString() };
-
-    // Formu localstorage'a ve global state'e kaydetmek için addForm aksiyonunu tetikleyin
-    dispatch(addForm(newForm));
-
-    // Formu sıfırla ve popup'ı kapat
-    setFormData({
-      name: '',
-      description: '',
-      createdAt: '',
-      fields: []
-    });
-    setFormErrors({});
+    // Hatalar yoksa form verilerini kaydetmek için Redux eylem oluşturucularını tetikleyin
+    dispatch(setFormFields(formFields.fields));
+    dispatch(setFormData(formFields));
+    dispatch(resetForm());
     onClosePopup();
   };
 
   return (
-    <div className="popup">
-      <div className="popup-inner">
+    <div className="form-popup">
+      <div className="form-popup-content">
         <h2>Yeni Form Oluştur</h2>
-        <div className="form-group">
-          <label htmlFor="name">Form Adı:</label>
-          <input
-            id="name"
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleInputChange}
-            className="form-control"
-          />
-          {formErrors.name && (
-            <span className="error">{formErrors.name}</span>
-          )}
-        </div>
-        <div className="form-group">
-          <label htmlFor="description">Açıklama:</label>
-          <input
-            id="description"
-            type="text"
-            name="description"
-            value={formData.description}
-            onChange={handleInputChange}
-            className="form-control"
-          />
-        </div>
-        <div className="form-group">
-          <label>Alanlar:</label>
-          {formData.fields.map((field, index) => (
-            <div key={index} className="field">
-              <input
-                type="text"
-                name={`field-${index}-name`}
-                value={field.name}
-                onChange={(e) => handleFieldChange(index, e)}
-                placeholder="Alan Adı"
-                className="form-control"
-              />
-              {formErrors[`field-${index}-name`] && (
-                <span className="error">
-                  {formErrors[`field-${index}-name`]}
-                </span>
-              )}
-              <input
-                type="text"
-                name={`field-${index}-dataType`}
-                value={field.dataType}
-                onChange={(e) => handleFieldChange(index, e)}
-                placeholder="Veri Türü"
-                className="form-control"
-              />
-              {formErrors[`field-${index}-dataType`] && (
-                <span className="error">
-                  {formErrors[`field-${index}-dataType`]}
-                </span>
-              )}
-              <button onClick={() => handleRemoveField(index)}>Sil</button>
-            </div>
-          ))}
-          <button onClick={handleAddField}>Alan Ekle</button>
-        </div>
-        <div className="form-group">
-          <button onClick={handleSaveForm}>Kaydet</button>
-          <button onClick={onClosePopup}>İptal</button>
-        </div>
+        <label htmlFor="name">Form Adı:</label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          value={formFields.name}
+          onChange={(e) => setFormFields({ ...formFields, name: e.target.value })}
+        />
+
+        <label htmlFor="description">Açıklama:</label>
+        <textarea
+          id="description"
+          name="description"
+          value={formFields.description}
+          onChange={(e) => setFormFields({ ...formFields, description: e.target.value })}
+        ></textarea>
+
+        <label htmlFor="createdAt">Oluşturma Tarihi:</label>
+        <input
+          type="date"
+          id="createdAt"
+          name="createdAt"
+          value={formFields.createdAt}
+          onChange={(e) => setFormFields({ ...formFields, createdAt: e.target.value })}
+        />
+
+        <h3>Form Alanları</h3>
+        {formFields.fields.map((field, index) => (
+          <div key={index}>
+            <label htmlFor={`field-${index}`}>Alan Adı:</label>
+            <input
+              type="text"
+              id={`field-${index}`}
+              name="name"
+              value={field.name}
+              onChange={(e) => handleFieldChange(e, index)}
+            />
+            {formErrors[index] && <span className="error">{formErrors[index]}</span>}
+          </div>
+        ))}
+
+        <button onClick={handleSaveForm}>Kaydet</button>
+        <button onClick={onClosePopup}>İptal</button>
       </div>
     </div>
   );
