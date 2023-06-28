@@ -1,5 +1,5 @@
 // actions.js
-
+import axios from "axios";
 export const openPopup = () => ({
     type: 'OPEN_POPUP'
   });
@@ -26,4 +26,28 @@ export const openPopup = () => ({
   export const resetForm = () => ({
     type: 'RESET_FORM'
   });
+  
+  export const addForm = (form) => {
+    return {
+      type: 'ADD_FORM',
+      payload: form
+    };
+  };
+
+  export const fetchForms = () => {
+    return async (dispatch) => {
+      try {
+        // Forms API'sinden formları getir
+        const response = await axios.get('API_URL/forms');
+        const forms = response.data;
+  
+        // Forms state'ini güncelle
+        dispatch({ type: 'FETCH_FORMS_SUCCESS', payload: forms });
+      } catch (error) {
+        // Hata durumunda
+        dispatch({ type: 'FETCH_FORMS_ERROR', payload: error.message });
+      }
+    };
+  };
+  
   
