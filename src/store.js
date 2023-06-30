@@ -4,6 +4,7 @@ import { createStore } from 'redux';
 // Başlangıç durumu (initial state)
 const initialState = {
   showPopup: false,
+  forms: [], // forms state'i eklendi
   formFields: [],
   formErrors: {},
   formData: {
@@ -51,6 +52,11 @@ const reducer = (state = initialState, action) => {
           description: '',
           fields: []
         }
+      };
+    case 'FETCH_FORMS': // FETCH_FORMS aksiyonu eklendi
+      return {
+        ...state,
+        forms: action.payload
       };
     default:
       return state;
