@@ -1,16 +1,14 @@
 
 import './App.css';
-import ManagementPage from './components/management/ManagementPage';
+import React from 'react';
+import ManagementPage from './features/forms/components/FormFieldArray';
 import { Provider } from 'react-redux';
-import store from './store';
-import FormPopup from './components/management/FormPopup';
 
 function App() {
   return (
-    <Provider store={store}>
+    <React.Fragment>
     <ManagementPage />
-    <FormPopup/>
-  </Provider>
+    </React.Fragment>
   );
 }
 
