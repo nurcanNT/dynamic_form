@@ -4,17 +4,18 @@ import { createStore } from 'redux';
 // Başlangıç durumu (initial state)
 const initialState = {
   showPopup: false,
-  forms: [], // forms state'i eklendi
   formFields: [],
   formErrors: {},
   formData: {
     name: '',
     description: '',
     fields: []
-  }
+  },
+  forms: [] // forms state'i
 };
 
 // Reducer fonksiyonu
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'OPEN_POPUP':

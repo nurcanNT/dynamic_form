@@ -17,6 +17,7 @@ import axios from 'axios';
 const ManagementPage = () => {
   const showPopup = useSelector((state) => state.showPopup);
   const forms = useSelector((state) => state.forms); // Forms state'ini alın
+  console.log(forms);
   const dispatch = useDispatch();
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -37,9 +38,9 @@ const ManagementPage = () => {
     setSearchTerm(e.target.value);
   };
 
-  const filteredForms = forms.filter((form) =>
-    form.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // const filteredForms = forms.filter((form) =>
+  //   form.name.toLowerCase().includes(searchTerm.toLowerCase())
+  // );
 
   return (
     <div>
@@ -52,7 +53,7 @@ const ManagementPage = () => {
 
       <button onClick={handleOpenPopup}>Yeni Form Oluştur</button>
       {showPopup && <FormPopup onClosePopup={handleClosePopup} />}
-      <FormList forms={filteredForms} />
+      {/* <FormList forms={filteredForms} /> */}
     </div>
   );
 };

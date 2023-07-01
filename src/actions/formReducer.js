@@ -5,6 +5,10 @@ const initialState = {
     data: {}, // Form verileri
   };
   
+  const reducer = (state = initialState, action) => {
+    // ...
+  };
+  
   const formReducer = (state = initialState, action) => {
     switch (action.type) {
       case 'SET_FORM_FIELDS':
