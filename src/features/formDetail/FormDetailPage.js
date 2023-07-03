@@ -1,4 +1,6 @@
-import { useLayoutEffect, useState } from "react"
+import { useLayoutEffect, useState } from "react";
+import React from 'react';
+
 
 
 function formDataType(type) {
@@ -86,4 +88,4 @@ const FormDetailPage = () => {
         </div >
     )
 }
-export default FormDetailPage
+export default FormDetailPage;

@@ -1,14 +1,22 @@
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import React, { Suspense } from "react";
+import FormsPage from './features/forms/FormsPage';
 
-import './App.css';
-import React from 'react';
-import ManagementPage from './features/forms/components/FormFieldArray';
-import { Provider } from 'react-redux';
+const Forms = React.lazy(() => import("./pages/forms"));
+const FormDetail = React.lazy(() => import("./pages/formDetail"));
 
 function App() {
   return (
-    <React.Fragment>
-    <ManagementPage />
-    </React.Fragment>
+    <Router>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Routes>
+          <Route path="/" element={<FormsPage />} />
+          <Route path="/" element={<Forms />} />
+          <Route path="/forms/:name" element={<FormDetail />} />
+          <Route path="/forms/:name" element={<FormsPage/>} />
+        </Routes>
+      </Suspense>
+    </Router>
   );
 }
 
