@@ -1,4 +1,4 @@
-import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
+import { Route, BrowserRouter as Router, Routes, Switch } from "react-router-dom";
 import React, { Suspense } from "react";
 
 const Forms = React.lazy(() => import("./pages/forms"));
@@ -33,10 +33,12 @@ function App() {
     <Router>
       <ErrorBoundary>
         <Suspense fallback={<div>Loading...</div>}>
-          <Switch>
+          <Routes>  {/*testing routes*/}
+            <Switch>
             <Route path="/" element={<Forms />} />
             <Route path="/forms/:name" element={<FormDetail />} />
-          </Switch>
+            </Switch>
+            </Routes>
         </Suspense>
       </ErrorBoundary>
     </Router>
